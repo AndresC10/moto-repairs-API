@@ -5,6 +5,7 @@ const handleCastError22P02 = () => {
 };
 
 const sendErrorDev = (err, res) => {
+  console.log('me ejecuto');
   res.status(err.statusCode).json({
     status: err.status,
     error: err,

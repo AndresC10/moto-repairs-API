@@ -1,5 +1,6 @@
 const User = require('../models/users.models');
 const catchAsync = require('../utils/catchAsync');
+const bcrypt = require('bcryptjs');
 
 exports.getUsers = catchAsync(async (req, res) => {
   const users = await User.findAll({
@@ -31,10 +32,21 @@ exports.createUser = catchAsync(async (req, res) => {
     password,
     role,
   });
+
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(password, salt);
+
+  await user.save();
+
   res.status(201).json({
     status: 'success',
     message: 'User created successfully',
-    user,
+    user: {
+      id: user.id,
+      username: user.name,
+      email: user.email,
+      role: user.role,
+    },
   });
 });
 

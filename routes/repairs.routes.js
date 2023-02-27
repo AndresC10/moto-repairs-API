@@ -7,14 +7,11 @@ const {
   updatePendingRepair,
   deletePendingRepair,
 } = require('../controllers/repairs.controller');
+const { restrictTo, protect } = require('../middlewares/auth.middleware');
 const { validIfExistRepair } = require('../middlewares/repairs.middleware');
 const { validateFields } = require('../middlewares/validateField.middleware');
 
 const router = Router();
-
-router.get('/', getPendingRepairs);
-
-router.get('/:id', validIfExistRepair, getPendingRepair);
 
 router.post(
   '/',
@@ -34,11 +31,37 @@ router.post(
   createPendingRepair
 );
 
-router.patch('/:id', validIfExistRepair, updatePendingRepair);
+router.use(protect);
 
-router.put('/:id', validIfExistRepair, updatePendingRepair);
+router.get('/', restrictTo('employee'), getPendingRepairs);
 
-router.delete('/:id', validIfExistRepair, deletePendingRepair);
+router.get(
+  '/:id',
+  validIfExistRepair,
+  restrictTo('employee'),
+  getPendingRepair
+);
+
+router.patch(
+  '/:id',
+  validIfExistRepair,
+  restrictTo('employee'),
+  updatePendingRepair
+);
+
+router.put(
+  '/:id',
+  validIfExistRepair,
+  restrictTo('employee'),
+  updatePendingRepair
+);
+
+router.delete(
+  '/:id',
+  validIfExistRepair,
+  restrictTo('employee'),
+  deletePendingRepair
+);
 
 module.exports = {
   repairsRouter: router,

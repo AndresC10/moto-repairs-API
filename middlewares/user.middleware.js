@@ -11,7 +11,7 @@ exports.validIfExistUser = catchAsync(async (req, res, next) => {
     },
   });
   if (!user) {
-    return next(AppError('The id does not correspond to any user', 400));
+    return next(new AppError('The id does not correspond to any user', 400));
   }
 
   req.user = user;
